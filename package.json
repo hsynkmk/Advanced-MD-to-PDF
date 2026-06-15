@@ -1,0 +1,422 @@
+{
+  "name": "Advanced-MD-to-PDF",
+  "displayName": "Advanced MD to PDF",
+  "description": "Convert Markdown to PDF instantly. Mermaid diagrams, KaTeX math, GitHub alerts, collapsible <details>, themes, syntax highlighting, and smart overflow handling.",
+  "version": "2.0.2",
+  "publisher": "hsynkmk",
+  "icon": "icon.png",
+  "author": {
+    "name": "Huseyin Kaymak"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hsynkmk/Advanced-MD-to-PDF"
+  },
+  "bugs": {
+    "url": "https://github.com/hsynkmk/Advanced-MD-to-PDF/issues"
+  },
+  "homepage": "https://github.com/hsynkmk/Advanced-MD-to-PDF#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Formatters"
+  ],
+  "keywords": [
+    "markdown",
+    "pdf",
+    "export",
+    "convert",
+    "md",
+    "document",
+    "print",
+    "mermaid",
+    "katex",
+    "math",
+    "diagrams",
+    "github alerts",
+    "admonitions"
+  ],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "md-to-pdf.convert",
+        "title": "Advanced MD to PDF",
+        "icon": "$(file-pdf)"
+      },
+      {
+        "command": "md-to-pdf.convertFolder",
+        "title": "MD to PDF: Convert All Markdown in Folder"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "md-to-pdf.convert",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "md-to-pdf.convert",
+          "group": "1_modification"
+        }
+      ],
+      "explorer/context": [
+        {
+          "when": "resourceExtname == .md",
+          "command": "md-to-pdf.convert",
+          "group": "1_modification"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "md-to-pdf.convertFolder",
+          "group": "1_modification"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "md-to-pdf.convert",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
+        "when": "resourceLangId == markdown"
+      }
+    ],
+    "configuration": {
+      "title": "MD to PDF",
+      "properties": {
+        "md-to-pdf.openAfterConversion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically open the PDF after conversion"
+        },
+        "md-to-pdf.pageFormat": {
+          "type": "string",
+          "default": "A4",
+          "enum": [
+            "A4",
+            "Letter",
+            "Legal",
+            "A3",
+            "A5",
+            "A6",
+            "Tabloid"
+          ],
+          "enumDescriptions": [
+            "A4 (210mm × 297mm)",
+            "Letter (8.5\" × 11\")",
+            "Legal (8.5\" × 14\")",
+            "A3 (297mm × 420mm)",
+            "A5 (148mm × 210mm)",
+            "A6 (105mm × 148mm)",
+            "Tabloid (11\" × 17\")"
+          ],
+          "description": "PDF page format"
+        },
+        "md-to-pdf.landscape": {
+          "type": "boolean",
+          "default": false,
+          "description": "Render pages in landscape orientation"
+        },
+        "md-to-pdf.scale": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0.1,
+          "maximum": 2,
+          "description": "Render scale of the webpage (0.1 - 2). Use to shrink wide content onto the page."
+        },
+        "md-to-pdf.margins": {
+          "type": "object",
+          "default": {
+            "top": "15mm",
+            "right": "15mm",
+            "bottom": "15mm",
+            "left": "15mm"
+          },
+          "properties": {
+            "top": {
+              "type": "string",
+              "description": "Top margin (e.g., '15mm', '0.5in')"
+            },
+            "right": {
+              "type": "string",
+              "description": "Right margin"
+            },
+            "bottom": {
+              "type": "string",
+              "description": "Bottom margin"
+            },
+            "left": {
+              "type": "string",
+              "description": "Left margin"
+            }
+          },
+          "description": "Page margins for the PDF"
+        },
+        "md-to-pdf.onFileExists": {
+          "type": "string",
+          "default": "overwrite",
+          "enum": [
+            "overwrite",
+            "newFile"
+          ],
+          "enumDescriptions": [
+            "Overwrite the existing file",
+            "Create a new file with a sequence number (e.g. file-1.pdf)"
+          ],
+          "description": "Behavior when the output file already exists"
+        },
+        "md-to-pdf.outputDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Directory to write PDFs to. Relative paths are resolved against the source file's folder. Leave empty to write next to the source."
+        },
+        "md-to-pdf.viewer": {
+          "type": "string",
+          "default": "internal",
+          "enum": [
+            "system",
+            "internal"
+          ],
+          "enumDescriptions": [
+            "Open in default system application",
+            "Open in VS Code internal viewer"
+          ],
+          "description": "Viewer to use when opening the generated PDF"
+        },
+        "md-to-pdf.theme": {
+          "type": "string",
+          "default": "github-light",
+          "enum": [
+            "github-light",
+            "github-dark",
+            "academic"
+          ],
+          "enumDescriptions": [
+            "GitHub light theme (default)",
+            "GitHub dark theme",
+            "Clean serif theme for papers and reports"
+          ],
+          "description": "Built-in styling theme for the PDF"
+        },
+        "md-to-pdf.customCss": {
+          "type": "string",
+          "default": "",
+          "description": "Path to a custom CSS file appended after the theme (overrides theme rules). Relative paths resolve against the workspace folder."
+        },
+        "md-to-pdf.fonts": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "body": {
+              "type": "string",
+              "description": "Body font family (CSS font-family value)"
+            },
+            "mono": {
+              "type": "string",
+              "description": "Monospace font family for code"
+            },
+            "size": {
+              "type": "string",
+              "description": "Base body font size (e.g. '14px', '11pt')"
+            }
+          },
+          "description": "Font overrides for the PDF"
+        },
+        "md-to-pdf.mermaid.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render ```mermaid code blocks as diagrams"
+        },
+        "md-to-pdf.mermaid.theme": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "default",
+            "neutral",
+            "dark",
+            "forest"
+          ],
+          "description": "Mermaid diagram theme ('auto' follows the PDF theme)"
+        },
+        "md-to-pdf.math.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render LaTeX math ($inline$ and $$block$$) with KaTeX"
+        },
+        "md-to-pdf.toc.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable [[toc]] / [TOC] table-of-contents generation and heading anchors"
+        },
+        "md-to-pdf.emoji": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render :emoji: shortcodes"
+        },
+        "md-to-pdf.alerts.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Render GitHub-style alerts/callouts (> [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION])"
+        },
+        "md-to-pdf.extraSyntax": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable extra Markdown syntax: definition lists, subscript (H~2~O), superscript (x^2^), ==highlight==, and abbreviations"
+        },
+        "md-to-pdf.expandDetails": {
+          "type": "boolean",
+          "default": true,
+          "description": "Expand all collapsible <details> elements so their content is visible in the PDF (a collapsed <details> would otherwise print blank)"
+        },
+        "md-to-pdf.linkRenderUrls": {
+          "type": "boolean",
+          "default": false,
+          "description": "Print the destination URL after external link text, e.g. 'docs (https://example.com)'. Useful for printed PDFs."
+        },
+        "md-to-pdf.convertFolder.recursive": {
+          "type": "boolean",
+          "default": false,
+          "description": "When converting a folder, also convert Markdown files in subfolders"
+        },
+        "md-to-pdf.codeBlocks.wordWrap": {
+          "type": "boolean",
+          "default": true,
+          "description": "Wrap long lines in code blocks instead of clipping them"
+        },
+        "md-to-pdf.tables.wide": {
+          "type": "string",
+          "default": "wrap",
+          "enum": [
+            "wrap",
+            "shrink"
+          ],
+          "enumDescriptions": [
+            "Wrap cell content so wide tables fit the page",
+            "Reduce table font size to help wide tables fit"
+          ],
+          "description": "How to handle tables wider than the page"
+        },
+        "md-to-pdf.embedImages": {
+          "type": "boolean",
+          "default": true,
+          "description": "Embed local images as data URIs (more reliable, self-contained rendering)"
+        },
+        "md-to-pdf.header": {
+          "type": "object",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Show a running page header"
+            },
+            "template": {
+              "type": "string",
+              "description": "Header HTML. Tokens: {title} {date} {pageNumber} {totalPages} {filePath}"
+            }
+          },
+          "description": "PDF page header configuration"
+        },
+        "md-to-pdf.footer": {
+          "type": "object",
+          "default": {
+            "enabled": false
+          },
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Show a running page footer"
+            },
+            "template": {
+              "type": "string",
+              "description": "Footer HTML. Tokens: {title} {date} {pageNumber} {totalPages} {filePath}"
+            }
+          },
+          "description": "PDF page footer configuration"
+        },
+        "md-to-pdf.browserPath": {
+          "type": "string",
+          "default": "",
+          "description": "Explicit path to a Chrome/Chromium/Edge executable. Leave empty to auto-detect, then auto-download if none is found."
+        },
+        "md-to-pdf.timeout": {
+          "type": "number",
+          "default": 120000,
+          "description": "Maximum time in milliseconds to wait while rendering a page (navigation, mermaid, and PDF generation). Set to 0 to disable the limit entirely for very large documents."
+        }
+      }
+    },
+    "customEditors": [
+      {
+        "viewType": "md-to-pdf.viewer",
+        "displayName": "MD to PDF Viewer",
+        "selector": [
+          {
+            "filenamePattern": "*.pdf"
+          }
+        ],
+        "priority": "default"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run copy-assets && npm run build",
+    "copy-assets": "node scripts/copy-assets.mjs",
+    "build": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --minify",
+    "watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --watch",
+    "compile": "tsc -p ./",
+    "lint": "eslint src --ext ts",
+    "package": "npm run copy-assets && vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/katex": "^0.16.8",
+    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it-emoji": "^3.0.1",
+    "@types/markdown-it-footnote": "^3.0.4",
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "@puppeteer/browsers": "^3.0.4",
+    "@types/highlight.js": "^9.12.4",
+    "@vscode/markdown-it-katex": "^1.1.2",
+    "highlight.js": "^11.11.1",
+    "katex": "^0.17.0",
+    "markdown-it": "^14.0.0",
+    "markdown-it-abbr": "^2.0.0",
+    "markdown-it-anchor": "^9.2.0",
+    "markdown-it-deflist": "^3.0.1",
+    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-front-matter": "^0.2.4",
+    "markdown-it-github-alerts": "^1.0.1",
+    "markdown-it-mark": "^4.0.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0",
+    "markdown-it-table-of-contents": "^1.2.0",
+    "mermaid": "^11.15.0",
+    "pdfjs-dist": "^5.4.394",
+    "puppeteer-core": "^23.0.0"
+  }
+}
