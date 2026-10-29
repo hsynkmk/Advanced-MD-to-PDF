@@ -83,6 +83,17 @@ const THEME_VARS: Record<ThemeName, string> = {
 }`,
 };
 
+/**
+ * Page (paper) colour per theme. Chrome leaves the page-margin area unpainted
+ * unless @page has a background, which printed dark themes with white borders.
+ * Custom properties do not reach the @page context, so literal colours are used.
+ */
+const PAGE_BACKGROUND: Record<ThemeName, string> = {
+  'github-light': '#ffffff',
+  'github-dark': '#0d1117',
+  'academic': '#ffffff',
+};
+
 // ============================================
 // Base CSS (theme-agnostic, uses the variables above)
 // ============================================
@@ -107,7 +118,7 @@ body {
   padding: 0;
 }
 
-body.theme-academic p { text-align: justify; }
+.theme-academic p { text-align: justify; }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
@@ -285,6 +296,12 @@ kbd {
 .footnotes { font-size: 0.85em; color: var(--color-fg-muted); border-top: 1px solid var(--color-border-muted); margin-top: 32px; }
 .footnotes ol { padding-left: 1.5em; }
 
+/* Manual page breaks: <!-- pagebreak --> or a pagebreak/newpage command line */
+.page-break { break-after: page; page-break-after: always; height: 0; margin: 0; border: 0; }
+
+/* Math: keep wide display equations inside the page */
+.katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; }
+
 /* Mermaid */
 .mermaid { background: transparent; text-align: center; margin-bottom: 16px; page-break-inside: avoid; }
 .mermaid svg { max-width: 100%; height: auto; }
@@ -292,8 +309,12 @@ kbd {
 /* Print / PDF optimization */
 @media print {
   body { max-width: none !important; padding: 0 !important; }
-  pre, blockquote, table, img { page-break-inside: avoid; }
+  pre, blockquote, img, .mermaid, .katex-display { page-break-inside: avoid; }
+  /* Tables may span pages (avoiding breaks inside a long table leaves a big
+     blank gap); keep rows whole and repeat the header on every page. */
   tr { page-break-inside: avoid; }
+  thead { display: table-header-group; }
+  .katex-display { overflow: visible; }
   h1, h2, h3, h4, h5, h6 { page-break-after: avoid; page-break-inside: avoid; }
 }
 `;
@@ -385,12 +406,19 @@ function getFontCss(fonts: FontOptions): string {
   return decls.length ? `:root { ${decls.join(' ')} }` : '';
 }
 
-/** Read bundled KaTeX CSS and rewrite relative font URLs to absolute file:// URLs. */
-function getKatexCss(extensionPath: string): string {
+/**
+ * Read bundled KaTeX CSS and rewrite relative font URLs to a target-appropriate
+ * base (`file://` for PDF generation, a webview URI for the live preview).
+ */
+function getKatexCss(opts: RenderOptions): string {
   try {
-    const cssPath = path.join(extensionPath, 'out', 'katex', 'katex.min.css');
+    const cssPath = path.join(opts.extensionPath, 'out', 'katex', 'katex.min.css');
     const raw = fs.readFileSync(cssPath, 'utf-8');
-    const fontsUrl = pathToFileURL(path.join(extensionPath, 'out', 'katex', 'fonts')).href;
+    const fontsDir = path.join(opts.extensionPath, 'out', 'katex', 'fonts');
+    const fontsUrl =
+      opts.assetMode === 'webview' && opts.toAssetUri
+        ? opts.toAssetUri(fontsDir)
+        : pathToFileURL(fontsDir).href;
     return raw.replace(/url\(fonts\//g, `url(${fontsUrl}/`);
   } catch (__) {
     return '';
@@ -404,10 +432,13 @@ function getKatexCss(extensionPath: string): string {
 export function getStyles(opts: RenderOptions): string {
   const themeVars = THEME_VARS[opts.theme] || THEME_VARS['github-light'];
   const hljs = opts.theme === 'github-dark' ? HLJS_DARK : HLJS_LIGHT;
-  const katex = opts.math ? getKatexCss(opts.extensionPath) : '';
+  const katex = opts.math ? getKatexCss(opts) : '';
+
+  const pageBg = PAGE_BACKGROUND[opts.theme] || PAGE_BACKGROUND['github-light'];
 
   return [
     themeVars,
+    `@page { background: ${pageBg}; }`,
     BASE_CSS,
     hljs,
     getOverflowCss(opts),
@@ -416,23 +447,3 @@ export function getStyles(opts: RenderOptions): string {
     opts.customCss || '',
   ].join('\n');
 }
-
-/** Backwards-compatible default light stylesheet (used as a fallback). */
-export const PDF_STYLES = getStyles({
-  extensionPath: '',
-  basePath: '',
-  theme: 'github-light',
-  fonts: {},
-  customCss: '',
-  math: false,
-  mermaid: false,
-  toc: true,
-  emoji: true,
-  alerts: true,
-  extraSyntax: true,
-  footnotes: true,
-  embedImages: true,
-  linkRenderUrls: false,
-  codeWrap: true,
-  tablesWide: 'wrap',
-});

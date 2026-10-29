@@ -2,6 +2,7 @@
 .vscode/**
 .vscode-test/**
 src/**
+scripts/**
 node_modules/**
 
 # Config files
@@ -10,13 +11,23 @@ node_modules/**
 tsconfig.json
 *.md
 !README.md
+!CHANGELOG.md
 
-# Build artifacts
+# Generated / sample PDFs, example sources, and README screenshots
+# (vsce points the README's relative image links at GitHub, so they need not ship)
+*.pdf
+examples/**
+images/**
+
+# Build artifacts. vsce treats "!" patterns as always-include, so none may cover
+# all of out/: only the esbuild bundle ships; tsc's per-file outputs are for tests.
 **/*.map
 **/*.ts
-!out/**
+out/*.js
+!out/extension.js
 
 # Test files
+test/**
 **/test/**
 **/*.test.js
 

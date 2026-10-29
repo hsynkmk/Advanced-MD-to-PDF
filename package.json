@@ -2,7 +2,7 @@
   "name": "Advanced-MD-to-PDF",
   "displayName": "Advanced MD to PDF",
   "description": "Convert Markdown to PDF instantly. Mermaid diagrams, KaTeX math, GitHub alerts, collapsible <details>, themes, syntax highlighting, and smart overflow handling.",
-  "version": "2.0.2",
+  "version": "2.3.0",
   "publisher": "hsynkmk",
   "icon": "icon.png",
   "author": {
@@ -22,7 +22,7 @@
   },
   "categories": [
     "Other",
-    "Formatters"
+    "Visualization"
   ],
   "keywords": [
     "markdown",
@@ -44,30 +44,83 @@
     "theme": "dark"
   },
   "activationEvents": [
-    "onLanguage:markdown"
+    "onLanguage:markdown",
+    "onWebviewPanel:md-to-pdf.preview"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "In Restricted Mode, workspace settings cannot choose the browser executable, custom CSS file, or output directory.",
+      "restrictedConfigurations": [
+        "md-to-pdf.browserPath",
+        "md-to-pdf.customCss",
+        "md-to-pdf.outputDirectory"
+      ]
+    },
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Conversion needs files on disk and a local Chrome."
+    }
+  },
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "md-to-pdf.convert",
-        "title": "Advanced MD to PDF",
+        "title": "Convert to PDF",
+        "category": "Advanced MD to PDF",
         "icon": "$(file-pdf)"
       },
       {
+        "command": "md-to-pdf.exportAs",
+        "title": "Export to PDF (choose location)…",
+        "category": "Advanced MD to PDF"
+      },
+      {
+        "command": "md-to-pdf.preview",
+        "title": "Open PDF Preview",
+        "category": "Advanced MD to PDF",
+        "icon": "$(open-preview)"
+      },
+      {
         "command": "md-to-pdf.convertFolder",
-        "title": "MD to PDF: Convert All Markdown in Folder"
+        "title": "Convert All Markdown in Folder",
+        "category": "Advanced MD to PDF"
       }
     ],
     "menus": {
+      "commandPalette": [
+        {
+          "command": "md-to-pdf.convert",
+          "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "md-to-pdf.exportAs",
+          "when": "resourceLangId == markdown"
+        },
+        {
+          "command": "md-to-pdf.preview",
+          "when": "resourceLangId == markdown"
+        }
+      ],
       "editor/title": [
         {
           "when": "resourceLangId == markdown",
+          "command": "md-to-pdf.preview",
+          "group": "navigation@1"
+        },
+        {
+          "when": "resourceLangId == markdown",
           "command": "md-to-pdf.convert",
-          "group": "navigation"
+          "group": "navigation@2"
         }
       ],
       "editor/context": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "md-to-pdf.preview",
+          "group": "1_modification"
+        },
         {
           "when": "resourceLangId == markdown",
           "command": "md-to-pdf.convert",
@@ -76,8 +129,13 @@
       ],
       "explorer/context": [
         {
-          "when": "resourceExtname == .md",
+          "when": "resourceExtname == .md || resourceExtname == .markdown",
           "command": "md-to-pdf.convert",
+          "group": "1_modification"
+        },
+        {
+          "when": "resourceExtname == .md || resourceExtname == .markdown",
+          "command": "md-to-pdf.preview",
           "group": "1_modification"
         },
         {
@@ -92,7 +150,13 @@
         "command": "md-to-pdf.convert",
         "key": "ctrl+alt+p",
         "mac": "cmd+alt+p",
-        "when": "resourceLangId == markdown"
+        "when": "editorLangId == markdown && editorTextFocus"
+      },
+      {
+        "command": "md-to-pdf.preview",
+        "key": "ctrl+k ctrl+alt+v",
+        "mac": "cmd+k cmd+alt+v",
+        "when": "editorLangId == markdown && editorTextFocus"
       }
     ],
     "configuration": {
@@ -102,6 +166,11 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically open the PDF after conversion"
+        },
+        "md-to-pdf.askOptionsOnConvert": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prompt to choose theme, page size, and orientation each time you run 'Convert to PDF'. Leave off for instant one-click conversion (use the Preview panel toolbar for per-document options)."
         },
         "md-to-pdf.pageFormat": {
           "type": "string",
@@ -164,7 +233,7 @@
               "description": "Left margin"
             }
           },
-          "description": "Page margins for the PDF"
+          "description": "Page margins for the PDF (sides you omit keep their 15mm default)"
         },
         "md-to-pdf.onFileExists": {
           "type": "string",
@@ -182,7 +251,7 @@
         "md-to-pdf.outputDirectory": {
           "type": "string",
           "default": "",
-          "description": "Directory to write PDFs to. Relative paths are resolved against the source file's folder. Leave empty to write next to the source."
+          "description": "Directory to write PDFs to. Relative paths are resolved against the source file's folder. Supports ${workspaceFolder}, ${fileDirname}, ${userHome} and ~. Leave empty to write next to the source."
         },
         "md-to-pdf.viewer": {
           "type": "string",
@@ -193,7 +262,7 @@
           ],
           "enumDescriptions": [
             "Open in default system application",
-            "Open in VS Code internal viewer"
+            "Open in the built-in PDF viewer (also available for any PDF via \"Open With…\")"
           ],
           "description": "Viewer to use when opening the generated PDF"
         },
@@ -215,7 +284,7 @@
         "md-to-pdf.customCss": {
           "type": "string",
           "default": "",
-          "description": "Path to a custom CSS file appended after the theme (overrides theme rules). Relative paths resolve against the workspace folder."
+          "description": "Path to a custom CSS file appended after the theme (overrides theme rules). Relative paths resolve against the workspace folder; ${workspaceFolder}, ${fileDirname}, ${userHome} and ~ are supported. Relative url(...) references inside the file resolve against the CSS file."
         },
         "md-to-pdf.fonts": {
           "type": "object",
@@ -251,7 +320,7 @@
             "dark",
             "forest"
           ],
-          "description": "Mermaid diagram theme ('auto' follows the PDF theme)"
+          "description": "Mermaid diagram theme ('auto' follows the PDF theme: dark for GitHub Dark, neutral for Academic)"
         },
         "md-to-pdf.math.enabled": {
           "type": "boolean",
@@ -262,6 +331,20 @@
           "type": "boolean",
           "default": true,
           "description": "Enable [[toc]] / [TOC] table-of-contents generation and heading anchors"
+        },
+        "md-to-pdf.toc.levels": {
+          "type": "array",
+          "default": [
+            1,
+            2,
+            3
+          ],
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 6
+          },
+          "description": "Heading levels included in the [[toc]] table of contents"
         },
         "md-to-pdf.emoji": {
           "type": "boolean",
@@ -353,7 +436,8 @@
         "md-to-pdf.browserPath": {
           "type": "string",
           "default": "",
-          "description": "Explicit path to a Chrome/Chromium/Edge executable. Leave empty to auto-detect, then auto-download if none is found."
+          "description": "Explicit path to a Chrome/Chromium/Edge/Brave executable. Leave empty to auto-detect, then auto-download if none is found. Can only be set in user (not workspace) settings.",
+          "scope": "machine"
         },
         "md-to-pdf.timeout": {
           "type": "number",
@@ -371,7 +455,7 @@
             "filenamePattern": "*.pdf"
           }
         ],
-        "priority": "default"
+        "priority": "option"
       }
     ]
   },
@@ -382,7 +466,9 @@
     "watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --external:vscode --format=cjs --platform=node --watch",
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
-    "package": "npm run copy-assets && vsce package --no-dependencies"
+    "pretest": "npm run copy-assets && npm run compile",
+    "test": "node --test \"test/**/*.test.mjs\"",
+    "package": "vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/katex": "^0.16.8",
@@ -399,10 +485,8 @@
   },
   "dependencies": {
     "@puppeteer/browsers": "^3.0.4",
-    "@types/highlight.js": "^9.12.4",
     "@vscode/markdown-it-katex": "^1.1.2",
     "highlight.js": "^11.11.1",
-    "katex": "^0.17.0",
     "markdown-it": "^14.0.0",
     "markdown-it-abbr": "^2.0.0",
     "markdown-it-anchor": "^9.2.0",

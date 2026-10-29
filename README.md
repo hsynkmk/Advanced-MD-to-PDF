@@ -1,72 +1,131 @@
-# Advanced MD to PDF ⚡
+<p align="center">
+  <img src="icon.png" width="112" alt="Advanced MD to PDF logo">
+</p>
 
-[![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/hsynkmk.Advanced-MD-to-PDF)](https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF)
-[![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/hsynkmk.Advanced-MD-to-PDF)](https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<h1 align="center">Advanced MD to PDF</h1>
 
-Convert Markdown to PDF instantly with a single click. Beautiful GitHub-style formatting with syntax highlighting, **Mermaid diagrams**, **KaTeX math**, **GitHub alerts**, collapsible `<details>`, themes, and smart overflow handling.
+<p align="center">
+  <b>Turn Markdown into polished PDFs in one click: with Mermaid diagrams, KaTeX math, GitHub alerts, themes, a page-accurate live preview, and a built-in PDF viewer.</b>
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF"><img src="https://img.shields.io/visual-studio-marketplace/v/hsynkmk.Advanced-MD-to-PDF?label=Marketplace&color=0078d4" alt="Marketplace version"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF"><img src="https://img.shields.io/visual-studio-marketplace/i/hsynkmk.Advanced-MD-to-PDF?color=2ea44f" alt="Installs"></a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF&ssr=false#review-details"><img src="https://img.shields.io/visual-studio-marketplace/r/hsynkmk.Advanced-MD-to-PDF?color=f5a623" alt="Rating"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="MIT license"></a>
+</p>
+
+---
+
+## 🚀 Quick start
+
+1. Open any `.md` file.
+2. Press **`Ctrl+Alt+P`** (`Cmd+Alt+P` on macOS), or click the **PDF** icon in the editor title bar.
+3. The PDF opens right inside VS Code. That's it: no setup, and Chrome is detected (or downloaded) automatically.
+
+Want to see it before exporting? Click the **preview** icon (`Ctrl+K Ctrl+Alt+V`).
+
+![Live preview with theme, page size and orientation toolbar](images/preview.png)
 
 ## ✨ Features
 
-- **⚡ Super Fast** — Persistent browser instance for near-instant conversions
-- **🎨 Themes** — `github-light`, `github-dark`, and `academic`, plus custom CSS and font overrides
-- **📊 Mermaid Diagrams** — ` ```mermaid ` blocks rendered to crisp vector graphics
-- **🧮 Math** — KaTeX inline `$…$` and block `$$…$$` LaTeX with bundled fonts
-- **📣 GitHub Alerts** — `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`
-- **📂 Collapsible Details** — `<details>` blocks are auto-expanded so nothing is hidden
-- **🔗 Smart Links & Overflow** — Working internal anchors, wrapped long code/URLs, fitted wide tables
-- **📑 Rich Markdown** — TOC, footnotes, emoji, task lists, definition lists, sub/sup, ==highlight==, abbreviations
-- **🖱️ One-Click** — Convert from title bar, context menu, status bar, or convert a whole folder
-- **⌨️ Keyboard Shortcut** — `Cmd+Alt+P` (Mac) / `Ctrl+Alt+P` (Windows/Linux)
-- **🖨️ Headers & Footers** — Page numbers, title, date, and file path tokens
-- **👀 PDF Viewer** — View generated PDFs directly in VS Code
-- **⬇️ Zero-Config Browser** — Auto-detects Chrome/Edge, or downloads Chrome automatically when none is found
+| | |
+|---|---|
+| 👀 **Live preview** | Drawn at the real paper size, margins, and orientation, so wrapping matches the PDF. Updates as you type. |
+| 🎨 **Themes** | `github-light`, `github-dark`, and `academic`, plus custom CSS and font overrides. |
+| 📊 **Mermaid diagrams** | ` ```mermaid ` blocks are rendered to crisp vector graphics. |
+| 🧮 **Math** | KaTeX inline `$…$` and block `$$…$$`, with bundled fonts. |
+| 📣 **GitHub alerts** | `> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`. |
+| 📑 **Rich Markdown** | TOC, footnotes, emoji, task lists, definition lists, sub/sup, `==highlight==`, abbreviations, and `<details>` (auto-expanded). |
+| 🔍 **Built-in PDF viewer** | Zoom and fit, selectable text with `Ctrl/Cmd+F`, clickable TOC and web links, and auto-refresh on re-export. |
+| 🖨️ **Page control** | Headers and footers with page numbers, manual page breaks, and per-document options in front matter. |
+| 📂 **Batch export** | Convert a multi-selection or a whole folder, with cancellable progress. |
+| ⚡ **Fast and zero-config** | A shared headless Chrome, Edge, Chromium, or Brave. If none is installed, Chrome is downloaded once and reused offline. |
 
-## 📸 Screenshots
+<p align="center">
+  <img src="images/themes.png" alt="The same document in the GitHub Light, GitHub Dark and Academic themes">
+</p>
 
-### Preview
-![Feature Preview](images/demo-preview.png)
+Try [`examples/feature-showcase.md`](examples/feature-showcase.md) to see every feature in one document.
 
-*See [examples/feature-showcase.md](examples/feature-showcase.md) for the source file.*
+## 📖 Usage
 
+### Convert
+| Where | How |
+|---|---|
+| Editor title bar | Click the **PDF** icon |
+| Keyboard | `Ctrl+Alt+P` (Windows/Linux) · `Cmd+Alt+P` (macOS) |
+| Status bar | Click **PDF** while a Markdown file is open |
+| Context menu | Right-click a `.md` file in the Explorer or editor → **Convert to PDF** (select several files to convert them all) |
+| Choose location | Command Palette → **Advanced MD to PDF: Export to PDF (choose location)…** |
+| Whole folder | Right-click a folder → **Convert All Markdown in Folder** |
 
-## 🚀 Usage
+### Live preview
+Click the **preview** icon in the editor title bar, press `Ctrl+K Ctrl+Alt+V` (`Cmd+K Cmd+Alt+V` on macOS),
+or run **Advanced MD to PDF: Open PDF Preview**. The toolbar changes the **theme**, **page size**, and
+**orientation** for this document. **Export to PDF** / **Export As…** use exactly those choices.
+Links work too: `#anchors` scroll the preview, relative `.md` links open in the editor, and web links open in
+your browser.
 
-### Method 1: Title Bar Button
-Click the **PDF** button in the editor title bar when viewing a Markdown file.
+> The preview doesn't take over `Ctrl+K V`, so VS Code's built-in *Markdown: Open Preview to the Side* keeps
+> that shortcut.
 
-### Method 2: Context Menu
-Right-click on a `.md` file in the Explorer or editor and select **MD to PDF: Convert to PDF**.
+### Built-in PDF viewer
 
-### Method 3: Status Bar
-Click the **PDF** button in the status bar when a Markdown file is open.
+![Built-in PDF viewer showing Mermaid diagrams](images/viewer.png)
 
-### Method 4: Keyboard Shortcut
-Press `Cmd+Alt+P` (Mac) or `Ctrl+Alt+P` (Windows/Linux) while editing a Markdown file.
+Generated PDFs open in an in-editor viewer. It has page navigation, zoom, fit-width / fit-page, selectable and
+searchable text (`Ctrl/Cmd+F`), clickable links, and *Save a copy*, *Print*, and *Open externally* buttons.
+When you re-export, the viewer refreshes automatically and keeps your page and zoom. Large documents stay
+smooth because only the pages near the viewport are kept in memory.
 
-### Method 5: Convert a Folder
-Right-click a folder in the Explorer and select **MD to PDF: Convert All Markdown in Folder**.
+**Keyboard:** `Page Up` / `Page Down`, `Home` / `End`, `Ctrl/Cmd +` / `-` to zoom, and `Ctrl/Cmd+0` to fit
+width.
+
+The viewer doesn't replace your default PDF app. To use it for any other PDF, right-click the file →
+**Open With…** → **MD to PDF Viewer**. If you'd rather use your system viewer for exports, set
+`md-to-pdf.viewer` to `system`.
+
+### Page breaks
+Put `<!-- pagebreak -->`, `\pagebreak`, or `\newpage` on a line of its own where a new page should start.
+
+### Per-document options (front matter)
+A `pdf:` block in the YAML front matter overrides your settings for that document. The preview toolbar and
+the *askOptionsOnConvert* prompts still take precedence over it.
+
+```yaml
+---
+title: Quarterly Report        # used for the {title} header/footer token and the preview title
+pdf:
+  theme: academic              # github-light | github-dark | academic
+  format: Letter               # A4 | Letter | Legal | A3 | A5 | A6 | Tabloid
+  landscape: true
+  margins: 20mm                # or a map with top / right / bottom / left
+  toc: false                   # disable [[toc]] and heading anchors
+---
+```
 
 ## ⚙️ Settings
 
 ### Output & layout
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `md-to-pdf.openAfterConversion` | `true` | Automatically open PDF after conversion |
+| `md-to-pdf.openAfterConversion` | `true` | Automatically open the PDF after conversion |
+| `md-to-pdf.askOptionsOnConvert` | `false` | Prompt for theme / page size / orientation each time you run **Convert to PDF** |
 | `md-to-pdf.pageFormat` | `"A4"` | A4, Letter, Legal, A3, A5, A6, Tabloid |
 | `md-to-pdf.landscape` | `false` | Render pages in landscape orientation |
 | `md-to-pdf.scale` | `1` | Render scale (0.1–2) to shrink wide content |
 | `md-to-pdf.margins` | `{...}` | Page margins (top, right, bottom, left) |
 | `md-to-pdf.onFileExists` | `"overwrite"` | `overwrite` or `newFile` (adds a sequence number) |
-| `md-to-pdf.outputDirectory` | `""` | Where to write PDFs (relative to the source file, or absolute) |
-| `md-to-pdf.viewer` | `"internal"` | `system` (default app) or `internal` (VS Code) |
+| `md-to-pdf.outputDirectory` | `""` | Where to write PDFs (relative to the source file, or absolute). Supports `${workspaceFolder}`, `${fileDirname}`, `${userHome}`, and `~` |
+| `md-to-pdf.viewer` | `"internal"` | `internal` (built-in viewer) or `system` (default app) |
 | `md-to-pdf.header` / `md-to-pdf.footer` | `{ enabled: false }` | Running header/footer; tokens: `{title} {date} {pageNumber} {totalPages} {filePath}` |
 
 ### Styling
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `md-to-pdf.theme` | `"github-light"` | `github-light`, `github-dark`, or `academic` |
-| `md-to-pdf.customCss` | `""` | Path to a CSS file appended after the theme |
+| `md-to-pdf.customCss` | `""` | Path to a CSS file appended after the theme (same path variables; relative `url(...)` inside it resolve against the CSS file) |
 | `md-to-pdf.fonts` | `{}` | `body`, `mono`, and `size` overrides |
 
 ### Content & rendering
@@ -76,6 +135,7 @@ Right-click a folder in the Explorer and select **MD to PDF: Convert All Markdow
 | `md-to-pdf.math.enabled` | `true` | Render KaTeX math |
 | `md-to-pdf.alerts.enabled` | `true` | Render GitHub-style alerts/callouts |
 | `md-to-pdf.toc.enabled` | `true` | `[[toc]]`/`[TOC]` and heading anchors |
+| `md-to-pdf.toc.levels` | `[1, 2, 3]` | Heading levels listed in the table of contents |
 | `md-to-pdf.emoji` | `true` | Render `:emoji:` shortcodes |
 | `md-to-pdf.extraSyntax` | `true` | Definition lists, sub/sup, `==mark==`, abbreviations |
 | `md-to-pdf.expandDetails` | `true` | Expand `<details>` so content is visible |
@@ -88,10 +148,10 @@ Right-click a folder in the Explorer and select **MD to PDF: Convert All Markdow
 ### Browser
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `md-to-pdf.browserPath` | `""` | Explicit Chrome/Chromium/Edge path (auto-detected, then auto-downloaded, if empty) |
+| `md-to-pdf.browserPath` | `""` | Explicit Chrome/Chromium/Edge/Brave path (auto-detected, then auto-downloaded, if empty). User settings only |
 | `md-to-pdf.timeout` | `120000` | Max time (ms) to wait while rendering. Set to `0` to disable for very large documents |
 
-### Example Configuration
+### Example configuration
 
 ```json
 {
@@ -106,42 +166,52 @@ Right-click a folder in the Explorer and select **MD to PDF: Convert All Markdow
 }
 ```
 
+## 🛠️ Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| *"Chrome … not found and automatic download failed"* | Install Chrome, Edge, Chromium, or Brave, or set `md-to-pdf.browserPath` in your **user** settings. |
+| Conversion times out on a huge document | Raise `md-to-pdf.timeout`, or set it to `0`. Splitting into chapters and using **Convert All Markdown in Folder** is faster. |
+| *"… is open in another program"* | Another app (e.g. Acrobat on Windows) is locking the PDF. Close it, or pick **Save As…** in the error message. |
+| `customCss` / `outputDirectory` / `browserPath` seem ignored | In [Restricted Mode](https://code.visualstudio.com/docs/editor/workspace-trust), workspace settings can't change these. Trust the folder or set them in user settings. |
+| A font looks different in the PDF | Fonts referenced only by name must be installed locally. Bundle web fonts via `customCss` with `@font-face`. |
+| Something else | Check the **MD to PDF** output channel (*View → Output*) and [open an issue](https://github.com/hsynkmk/Advanced-MD-to-PDF/issues). |
+
+## 🔒 Security
+
+- Scripts inside Markdown (raw `<script>` tags, `onerror=` handlers, …) are blocked while the PDF is
+  rendered, and the page can't make network requests from script. A document you convert can't read and
+  send away your local files.
+- `md-to-pdf.browserPath` can only be set in *user* settings, so a cloned repository's
+  `.vscode/settings.json` can't make the extension launch an arbitrary program.
+- In [Restricted Mode](https://code.visualstudio.com/docs/editor/workspace-trust), workspace settings can't
+  change `browserPath`, `customCss`, or `outputDirectory`.
+- Chrome's sandbox stays on. It's only disabled on Linux when VS Code itself runs as root (e.g. in
+  containers), where Chrome can't start otherwise.
+
 ## 📋 Requirements
 
-- **VS Code** 1.85.0 or higher
-- **Browser**: Chrome, Chromium, Microsoft Edge, or Brave (automatically detected)
-
-## 🛠️ Supported Markdown Features
-
-- ✅ Headings (H1–H6) with anchors and internal links
-- ✅ Bold, italic, strikethrough, ==highlight==, sub~script~, super^script^
-- ✅ Links (with optional printed URLs) and images (embedded as data URIs)
-- ✅ Ordered, unordered, task, and definition lists
-- ✅ Code blocks with syntax highlighting (long lines wrap)
-- ✅ Tables (wide tables wrap or shrink to fit)
-- ✅ Blockquotes and GitHub-style alerts/callouts
-- ✅ Collapsible `<details>` (auto-expanded)
-- ✅ Mermaid diagrams and KaTeX math
-- ✅ Footnotes, table of contents, emoji, abbreviations
-- ✅ Raw HTML, horizontal rules, ASCII diagrams
-
-## 🐛 Known Issues
-
-- Very large files (tens of thousands of lines) and documents with many Mermaid diagrams take longer to convert. If you hit a timeout, raise `md-to-pdf.timeout` or set it to `0` to disable the limit. Extremely large documents are also memory-heavy in Chrome — if conversion is very slow, consider splitting them or using **Convert All Markdown in Folder** on per-chapter files.
-- Web fonts referenced only by name must be installed locally to render in the PDF
-
-## 📝 Release Notes
-
-See [CHANGELOG.md](CHANGELOG.md) for release notes.
+- **VS Code** 1.85 or newer
+- **Browser:** Chrome, Chromium, Microsoft Edge, or Brave. It's detected automatically, and Chrome is
+  downloaded once if none is found.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Feel free to open an issue or submit a pull request.
+
+```bash
+npm install
+npm test        # copies assets, compiles, runs unit tests + a real-Chrome PDF smoke test
+npm run lint
+npm run build   # bundles out/extension.js (press F5 in VS Code to try it)
+```
+
+See [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ## 📄 License
 
-This extension is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE) © Huseyin Kaymak
 
 ---
 
-**Enjoy!** If you find this extension useful, please consider leaving a ⭐️ review on the marketplace.
+<p align="center">If this extension saves you time, please consider leaving a ⭐ <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF&ssr=false#review-details">review on the Marketplace</a>.</p>
