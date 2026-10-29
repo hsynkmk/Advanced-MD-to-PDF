@@ -9,9 +9,6 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF"><img src="https://img.shields.io/visual-studio-marketplace/v/hsynkmk.Advanced-MD-to-PDF?label=Marketplace&color=0078d4" alt="Marketplace version"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF"><img src="https://img.shields.io/visual-studio-marketplace/i/hsynkmk.Advanced-MD-to-PDF?color=2ea44f" alt="Installs"></a>
-  <a href="https://marketplace.visualstudio.com/items?itemName=hsynkmk.Advanced-MD-to-PDF&ssr=false#review-details"><img src="https://img.shields.io/visual-studio-marketplace/r/hsynkmk.Advanced-MD-to-PDF?color=f5a623" alt="Rating"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-yellow.svg" alt="MIT license"></a>
 </p>
 
