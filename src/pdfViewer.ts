@@ -75,7 +75,10 @@ export class PdfViewerProvider implements vscode.CustomReadonlyEditorProvider {
     let disposed = false;
     const sendPdf = async (keepPosition: boolean) => {
       try {
-        const data = await vscode.workspace.fs.readFile(document.uri);
+        // Copy into a plain Uint8Array: the extension host returns a Node Buffer, whose
+        // toJSON() turns it into {type:'Buffer', data:[…]} before VS Code can transfer
+        // it to the webview as binary.
+        const data = new Uint8Array(await vscode.workspace.fs.readFile(document.uri));
         if (!disposed) {
           await webviewPanel.webview.postMessage({ type: 'load', data, keepPosition });
         }
@@ -656,13 +659,23 @@ export class PdfViewerProvider implements vscode.CustomReadonlyEditorProvider {
       if (handled) e.preventDefault();
     });
 
+    /** Accept the bytes however the message channel delivered them. */
+    function toBytes(data) {
+      if (data instanceof Uint8Array) return data;
+      if (data instanceof ArrayBuffer) return new Uint8Array(data);
+      if (data && Array.isArray(data.data)) return new Uint8Array(data.data); // JSON-serialized Node Buffer
+      return null;
+    }
+
     // The extension reads the file and posts its bytes: on start-up ('ready') and
     // whenever the file changes on disk (keepPosition), e.g. after a re-export.
     window.addEventListener('message', (event) => {
       const msg = event.data;
       if (!msg) return;
       if (msg.type === 'load') {
-        loadPdf(msg.data, !!msg.keepPosition);
+        const data = toBytes(msg.data);
+        if (data) loadPdf(data, !!msg.keepPosition);
+        else loadFailed('The PDF data could not be read.', !!msg.keepPosition);
       } else if (msg.type === 'loadError') {
         loadFailed(msg.message, !!msg.keepPosition);
       }
